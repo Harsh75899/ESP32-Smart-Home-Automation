@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ESP32 Smart Home</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================================
+         APP
+    ========================================== -->
+
+    <div class="app">
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <header class="topbar">
+
+            <div class="brand">
+                <div
+                class="brand-icon"
+                id="themeToggle"
+                role="button"
+                tabindex="0"
+                aria-label="Toggle theme"
+                title="Toggle theme"
+               >
+                <svg
+                    class="smart-home-logo"
+                    viewBox="0 0 48 48"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                >
+            
+                    <!-- HOUSE -->
+                    <path
+                        class="logo-house"
+                        d="M10 23.5 L24 11 L38 23.5"
+                    />
+            
+                    <path
+                        class="logo-house"
+                        d="M13 21.5 V37 H35 V21.5"
+                    />
+            
+                    <!-- DOOR -->
+                    <path
+                        class="logo-house"
+                        d="M21 37 V29 H27 V37"
+                    />
+            
+                    <!-- WI-FI -->
+                    <path
+                        class="logo-wifi"
+                        d="M17 25.5 Q24 19.5 31 25.5"
+                    />
+            
+                    <path
+                        class="logo-wifi"
+                        d="M20.5 29 Q24 26 27.5 29"
+                    />
+            
+                    <circle
+                        class="logo-wifi-dot"
+                        cx="24"
+                        cy="32"
+                        r="1.5"
+                    />
+            
+                    <!-- MOON -->
+                    <path
+                        class="logo-moon"
+                        d="M34.5 8.5
+                           A6 6 0 1 0 39.5 16
+                           A5.2 5.2 0 0 1 34.5 8.5 Z"
+                    />
+            
+                    <!-- SUN -->
+                    <circle
+                        class="logo-sun"
+                        cx="36"
+                        cy="12"
+                        r="3.2"
+                    />
+            
+                    <path
+                        class="logo-sun"
+                        d="M36 6.5 V5
+                           M36 19 V17.5
+                           M30.5 12 H29
+                           M43 12 H41.5
+                           M32.1 8.1 L31 7
+                           M40.9 16.9 L39.8 15.8
+                           M40.9 8.1 L42 7
+                           M32.1 15.9 L31 17"
+                    />
+            
+                </svg>
+             </div>
+                <div>
+                    <h1>SMART HOME</h1>
+                    <span>ESP32 CONTROL SYSTEM</span>
+                </div>
+            </div>
+
+            <div class="connection">
+                <span class="connection-dot"></span>
+                <span id="connectionText">CONNECTING</span>
+            </div>
+            
+            <nav class="page-nav">
+                <button class="page-nav-button active" data-page="dashboard">
+                    🏠 DASHBOARD
+                </button>
+            
+                <button class="page-nav-button" data-page="system">
+                    ⚙️ SYSTEM
+                </button>
+                <button class="page-nav-button" data-page="logs">
+                    📋 LOGS
+                </button>
+            </nav>
+           
+
+        </header>
+        <main id="dashboardPage" class="page-content">
+        <!-- =====================================
+             ALERT BANNER
+        ====================================== -->
+
+        <section id="alertBanner" class="alert-banner hidden">
+
+            <div class="alert-icon" id="alertIcon">!</div>
+
+            <div class="alert-content">
+                <strong id="alertTitle">
+                    SYSTEM ALERT
+                </strong>
+
+                <span id="alertMessage">
+                    Attention required
+                </span>
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             MODE SELECTOR
+        ====================================== -->
+
+        <section class="panel">
+
+            <div class="section-title">
+                <span>OPERATING MODE</span>
+            </div>
+
+            <div class="mode-grid">
+
+                <button class="mode-button" id="modeAuto" data-mode="AUTO">
+                    <span class="mode-icon">A</span>
+                    <span>AUTO</span>
+                </button>
+
+                <button class="mode-button" id="modeManual" data-mode="MANUAL">
+                    <span class="mode-icon">M</span>
+                    <span>MANUAL</span>
+                </button>
+
+                <button class="mode-button" id="modeSecurity" data-mode="SECURITY">
+                    <span class="mode-icon">S</span>
+                    <span>SECURITY</span>
+                </button>
+            </div>
+
+            <div class="current-mode">
+                CURRENT:
+                <strong id="currentMode">---</strong>
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             SENSOR CARDS
+        ====================================== -->
+
+        <section class="panel">
+
+            <div class="section-title">
+                <span>LIVE SENSORS</span>
+                <span class="live-indicator">
+                    ● LIVE
+                </span>
+            </div>
+
+
+            <div class="sensor-grid">
+
+                <!-- Temperature -->
+
+                <div class="sensor-card">
+
+                    <div class="sensor-icon temperature-icon">
+                        °C
+                    </div>
+
+                    <div class="sensor-info">
+                        <span>TEMPERATURE</span>
+                        <strong id="temperature">
+                            --
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Humidity -->
+
+                <div class="sensor-card">
+
+                    <div class="sensor-icon humidity-icon">
+                        %
+                    </div>
+
+                    <div class="sensor-info">
+                        <span>HUMIDITY</span>
+                        <strong id="humidity">
+                            --
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Motion -->
+
+                <div class="sensor-card">
+
+                    <div class="sensor-icon">
+                        ◉
+                    </div>
+
+                    <div class="sensor-info">
+                        <span>MOTION</span>
+                        <strong id="motion">
+                            --
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Light -->
+
+                <div class="sensor-card">
+
+                    <div class="sensor-icon">
+                        ☀
+                    </div>
+
+                    <div class="sensor-info">
+                        <span>LIGHT</span>
+                        <strong id="light">
+                            --
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Flame -->
+
+                <div class="sensor-card">
+
+                    <div class="sensor-icon">
+                        🔥
+                    </div>
+
+                    <div class="sensor-info">
+                        <span>FIRE SENSOR</span>
+                        <strong id="flame">
+                            --
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+        
+
+        <!-- =====================================
+             DEVICES
+        ====================================== -->
+
+        <section class="panel">
+
+            <div class="section-title">
+                <span>DEVICES</span>
+            </div>
+
+
+            <div class="device-list">
+
+
+                <!-- LED 1 -->
+
+                <div class="device-row">
+
+                    <div class="device-info">
+
+                        <div class="device-icon">
+                            💡
+                        </div>
+
+                        <div>
+                            <strong>LIGHT 1</strong>
+                            <span id="led1Status">
+                                OFF
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button class="toggle" data-device="led1"><span></span></button>
+                </div>
+
+
+                <!-- LED 2 -->
+
+                <div class="device-row">
+
+                    <div class="device-info">
+
+                        <div class="device-icon">
+                            💡
+                        </div>
+
+                        <div>
+                            <strong>LIGHT 2</strong>
+                            <span id="led2Status">
+                                OFF
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button class="toggle" data-device="led2"><span></span></button>
+
+                </div>
+
+
+                <!-- LED 3 -->
+
+                <div class="device-row">
+
+                    <div class="device-info">
+
+                        <div class="device-icon">
+                            💡
+                        </div>
+
+                        <div>
+                            <strong>LIGHT 3</strong>
+                            <span id="led3Status">
+                                OFF
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button class="toggle" data-device="led3"><span></span></button>
+
+                </div>
+
+
+                <!-- FAN -->
+
+                <div class="device-row">
+
+                    <div class="device-info">
+
+                        <div class="device-icon">
+                            ◌
+                        </div>
+
+                        <div>
+                            <strong>FAN</strong>
+                            <span id="fanStatus">
+                                OFF
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button class="toggle" data-device="fan"><span></span></button>
+
+                </div>
+
+
+                <!-- BUZZER -->
+
+                <div class="device-row">
+
+                    <div class="device-info">
+
+                        <div class="device-icon">
+                            🔔
+                        </div>
+
+                        <div>
+                            <strong>BUZZER</strong>
+                            <span id="buzzerStatus">
+                                OFF
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button class="toggle" data-device="buzzer"><span></span></button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             SECURITY / ALARM
+        ====================================== -->
+
+        <section class="panel alarm-panel">
+
+            <div class="section-title">
+                <span>SECURITY STATUS</span>
+            </div>
+
+
+            <div class="alarm-status" id="alarmStatus">
+
+                <div class="alarm-symbol" id="alarmSymbol">
+                    ✓
+                </div>
+
+                <div class="alarm-info">
+
+                    <strong id="alarmTitle">
+                        SYSTEM SAFE
+                    </strong>
+
+                    <span id="alarmType">
+                        NO ACTIVE ALARM
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button class="silence-button" >
+                🔕 SILENCE ALARM
+            </button>
+
+        </section>
+
+     </main>
+     <main id="systemPage" class="page-content hidden">
+
+        <!-- ESP32 HEALTH -->
+    
+        <section class="panel">
+    
+            <div class="section-title">
+                <span>ESP32 HEALTH</span>
+                <span class="live-indicator">
+                    ● STATUS
+                </span>
+            </div>
+    
+            <div class="system-grid">
+    
+                <div>
+                    <span>CONNECTION</span>
+                    <strong id="systemConnection">
+                        --
+                    </strong>
+                </div>
+    
+                <div>
+                    <span>UPTIME</span>
+                    <strong id="systemUptime">
+                        --
+                    </strong>
+                </div>
+    
+                <div>
+                    <span>FREE MEMORY</span>
+                    <strong id="systemMemory">
+                        --
+                    </strong>
+                </div>
+    
+                <div>
+                    <span>FIRMWARE</span>
+                    <strong id="systemFirmware">
+                        --
+                    </strong>
+                </div>
+    
+            </div>
+    
+        </section>
+    
+    
+        <!-- NETWORK -->
+    
+        <section class="panel">
+    
+            <div class="section-title">
+                <span>NETWORK</span>
+            </div>
+    
+            <div class="system-grid">
+    
+                <div>
+                    <span>WI-FI</span>
+                    <strong id="wifiStatus">
+                        --
+                    </strong>
+                </div>
+    
+                <div>
+                    <span>IP ADDRESS</span>
+                    <strong id="ipAddress">
+                        --
+                    </strong>
+                </div>
+    
+                <div>
+                    <span>SIGNAL</span>
+                    <strong id="wifiSignal">
+                        --
+                    </strong>
+                </div>
+    
+            </div>
+    
+        </section>
+    
+    
+        <!-- SENSOR HEALTH -->
+    
+        <section class="panel">
+    
+            <div class="section-title">
+                <span>SENSOR HEALTH</span>
+            </div>
+    
+            <div class="health-list">
+    
+                <div class="health-row">
+                    <span>PIR SENSOR</span>
+                    <strong id="pirHealth">--</strong>
+                </div>
+    
+                <div class="health-row">
+                    <span>LDR SENSOR</span>
+                    <strong id="ldrHealth">--</strong>
+                </div>
+    
+                <div class="health-row">
+                    <span>FLAME SENSOR</span>
+                    <strong id="flameHealth">--</strong>
+                </div>
+    
+                <div class="health-row">
+                    <span>DHT11 SENSOR</span>
+                    <strong id="dhtHealth">--</strong>
+                </div>
+    
+            </div>
+    
+        </section>
+    
+    
+        <!-- SOFTWARE -->
+    
+        <section class="panel">
+    
+            <div class="section-title">
+                <span>SOFTWARE</span>
+            </div>
+    
+            <div class="system-grid">
+    
+                <div>
+                    <span>WEB UI</span>
+                    <strong>v1.0</strong>
+                </div>
+    
+                <div>
+                    <span>API</span>
+                    <strong id="apiStatus">
+                        --
+                    </strong>
+                </div>
+    
+                <div>
+                    <span>LAST UPDATE</span>
+                    <strong id="lastUpdate">
+                        --
+                    </strong>
+                </div>
+    
+            </div>
+    
+        </section>
+    
+     </main>
+     <main id="logsPage" class="page-content hidden">
+
+        <section class="panel">
+    
+            <div class="section-title">
+                <span>SYSTEM LOG</span>
+    
+                <button class="clear-log-button" id="clearLogs">
+                    CLEAR
+                </button>
+            </div>
+    
+            <div class="log-list" id="logList">
+    
+                <div class="log-empty" id="logEmpty">
+                    NO EVENTS RECORDED
+                </div>
+    
+            </div>
+    
+        </section>
+    
+     </main>
+
+
+        <!-- =====================================
+             FOOTER
+        ====================================== -->
+
+        <footer>
+
+            <span>
+                ESP32 SMART HOME
+            </span>
+
+            <span>
+                LOCAL CONTROL
+            </span>
+
+        </footer>
+
+    </div>
+
+
+    <!-- JavaScript -->
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
