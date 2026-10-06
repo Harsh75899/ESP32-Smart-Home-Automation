@@ -242,11 +242,6 @@ A demonstration video showing the working of the completed system will be added 
 🎥 [Watch the ESP32 Smart Home Automation Demo on YouTube](https://youtu.be/tpzSRQXaNdg)
 ---
 
-## 📸 Project Images
-
-Project photographs and screenshots of the web interface will be added here.
-
----
 
 ## 🔮 Future Improvements
 
