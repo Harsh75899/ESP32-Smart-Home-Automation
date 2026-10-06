@@ -239,7 +239,7 @@ If the project configuration requires filesystem data to be uploaded, upload the
 
 A demonstration video showing the working of the completed system will be added here.
 
-> Demo video: **Coming soon**
+> Demo video: [▶ Watch the ESP32 Smart Home Automation Demo](demo/esp32-smart-home-demo.mp4)
 
 ---
 
